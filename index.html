@@ -102,14 +102,15 @@ h1{text-align:center;font-size:26px;}
 .drop-arrow{color:#38bdf8;font-size:20px;transition:transform 0.4s ease;display:inline-block;}
 .drop-arrow.open{transform:rotate(180deg);}
 /* MOBILE RESPONSIVENESS */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
 
   body {
     padding: 1rem 0.5rem;
   }
 
   h1 {
-    font-size: 18px;
+    font-size: 20px;
+    line-height: 1.3;
   }
 
   .subtitle {
@@ -123,19 +124,19 @@ h1{text-align:center;font-size:26px;}
   }
 
   .metrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
 
   .metric-value {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
 
   .converter-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .converter-item p {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .weather-icon {
@@ -155,10 +156,6 @@ h1{text-align:center;font-size:26px;}
     height: 20px;
   }
 
-  table {
-    font-size: 11px;
-  }
-
   td, th {
     padding: 6px !important;
     font-size: 11px !important;
@@ -176,6 +173,10 @@ h1{text-align:center;font-size:26px;}
   .toggle-btn {
     font-size: 11px;
     padding: 5px 10px;
+  }
+
+  .container {
+    gap: 12px;
   }
 }
 
