@@ -101,6 +101,84 @@ h1{text-align:center;font-size:26px;}
 .dropdown-content.open{max-height:500px;opacity:1;}
 .drop-arrow{color:#38bdf8;font-size:20px;transition:transform 0.4s ease;display:inline-block;}
 .drop-arrow.open{transform:rotate(180deg);}
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 600px) {
+
+  body {
+    padding: 1rem 0.5rem;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .status {
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 30px;
+  }
+
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-value {
+    font-size: 1.8rem;
+  }
+
+  .converter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .converter-item p {
+    font-size: 1.2rem;
+  }
+
+  .weather-icon {
+    font-size: 35px;
+  }
+
+  .weather-desc {
+    font-size: 15px;
+  }
+
+  .leds {
+    gap: 12px;
+  }
+
+  .led {
+    width: 20px;
+    height: 20px;
+  }
+
+  table {
+    font-size: 11px;
+  }
+
+  td, th {
+    padding: 6px !important;
+    font-size: 11px !important;
+  }
+
+  .card {
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .section-title {
+    font-size: 11px;
+  }
+
+  .toggle-btn {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}
+
 </style>
 </head>
 <body>
