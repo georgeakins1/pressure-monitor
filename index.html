@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pressure Monitoring System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #1a1a2e;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #00d4ff;
+    }
+
+    p.subtitle {
+      color: #aaa;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      background: #16213e;
+      border-radius: 15px;
+      padding: 25px 35px;
+      text-align: center;
+      min-width: 160px;
+    }
+
+    .card h2 {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 32px;
+      font-weight: bold;
+      color: #00d4ff;
+    }
+
+    .card span {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .status-box {
+      padding: 20px 60px;
+      border-radius: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .NORMAL {
+      background-color: #1a5c2a;
+      color: #00ff44;
+      border: 2px solid #00ff44;
+    }
+
+    .WARNING {
+      background-color: #5c4a00;
+      color: #ffd700;
+      border: 2px solid #ffd700;
+    }
+
+    .DANGER {
+      background-color: #5c0000;
+      color: #ff4444;
+      border: 2px solid #ff4444;
+    }
+
+    .timestamp {
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .leds {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .led {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      opacity: 0.3;
+    }
+
+    .led.green { background-color: #00ff44; }
+    .led.yellow { background-color: #ffd700; }
+    .led.red { background-color: #ff4444; }
+    .led.active { opacity: 1; box-shadow: 0 0 15px currentColor; }
+
+    table {
+      background: #16213e;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 600px;
+      border-collapse: collapse;
+      overflow: hidden;
+    }
+
+    th {
+      background: #0f3460;
+      padding: 12px;
+      text-align: left;
+      color: #00d4ff;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #1a1a2e;
+      font-size: 14px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Pressure Monitoring System</h1>
+  <p class="subtitle">Live data from ESP32 + BMP180 Sensor</p>
+
+  <div class="leds">
+    <div class="led green" id="led-green"></div>
+    <div class="led yellow" id="led-yellow"></div>
+    <div class="led red" id="led-red"></div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h2>Pressure</h2>
+      <p id="pressure">--</p>
+      <span>hPa</span>
+    </div>
+    <div class="card">
+      <h2>Temperature</h2>
+      <p id="temperature">--</p>
+      <span>°C</span>
+    </div>
+  </div>
+
+  <div class="status-box NORMAL" id="status-box">
+    Loading...
+  </div>
+
+  <p class="timestamp" id="timestamp">Last updated: --</p>
+
+  <table>
+    <tr>
+      <th>Time</th>
+      <th>Pressure (hPa)</th>
+      <th>Temperature (C)</th>
+      <th>Status</th>
+    </tr>
+    <tbody id="history">
+    </tbody>
+  </table>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAeg2-r6dshrJM04fV9QEM6j4T7BtUvdI",
+      authDomain: "pressuremonitor-c4f90.firebaseapp.com",
+      databaseURL: "https://pressuremonitor-c4f90-default-rtdb.firebaseio.com",
+      projectId: "pressuremonitor-c4f90",
+      storageBucket: "pressuremonitor-c4f90.firebasestorage.app",
+      messagingSenderId: "414267146221",
+      appId: "1:414267146221:web:ddc74df915d7402867f1e4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const dataRef = ref(db, "sensorData");
+
+    let history = [];
+
+    onValue(dataRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const pressure = data.pressure;
+        const temperature = data.temperature;
+        const status = data.status;
+
+        document.getElementById("pressure").textContent = pressure.toFixed(2);
+        document.getElementById("temperature").textContent = temperature.toFixed(2);
+
+        const statusBox = document.getElementById("status-box");
+        statusBox.textContent = status;
+        statusBox.className = "status-box " + status;
+
+        document.getElementById("led-green").classList.remove("active");
+        document.getElementById("led-yellow").classList.remove("active");
+        document.getElementById("led-red").classList.remove("active");
+
+        if (status === "NORMAL") {
+          document.getElementById("led-green").classList.add("active");
+        } else if (status === "WARNING") {
+          document.getElementById("led-yellow").classList.add("active");
+        } else if (status === "DANGER") {
+          document.getElementById("led-red").classList.add("active");
+        }
+
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString();
+        document.getElementById("timestamp").textContent = "Last updated: " + timeStr;
+
+        history.unshift({ time: timeStr, pressure, temperature, status });
+        if (history.length > 10) history.pop();
+
+        const tbody = document.getElementById("history");
+        tbody.innerHTML = "";
+        history.forEach(row => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${row.time}</td>
+              <td>${row.pressure.toFixed(2)}</td>
+              <td>${row.temperature.toFixed(2)}</td>
+              <td style="color: ${row.status === 'NORMAL' ? '#00ff44' : row.status === 'WARNING' ? '#ffd700' : '#ff4444'}">${row.status}</td>
+            </tr>`;
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
