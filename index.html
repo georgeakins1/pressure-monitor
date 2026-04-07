@@ -408,16 +408,13 @@ window.toggleDrop = function(dropId, arrowId) {
 
 function getWeather(pressure) {
   if (pressure > 1020) {
-    return { icon: "☀️", desc: "Clear Sky / Sunny", detail: "High pressure — excellent weather conditions!" };
+    return { icon: "☀️", desc: "High Pressure", detail: "Warning: Pressure too high" };
   } else if (pressure >= 1000 && pressure <= 1020) {
-    return { icon: "⛅", desc: "Partly Cloudy / Normal", detail: "Normal pressure — stable weather expected" };
-  } else if (pressure >= 980 && pressure < 1000) {
-    return { icon: "🌧️", desc: "Cloudy / Rain Coming", detail: "Low pressure — expect rain or overcast skies" };
+    return { icon: "⛅", desc: "Normal", detail: "Stable atmospheric condition" };
   } else {
-    return { icon: "⛈️", desc: "Storm Warning!", detail: "Very low pressure — possible storm conditions!" };
+    return { icon: "⛈️", desc: "Low Pressure", detail: "Danger: Pressure too low" };
   }
 }
-
 const chart = new Chart(document.getElementById("chart"), {
   type: "line",
   data: {
