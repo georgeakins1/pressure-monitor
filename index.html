@@ -221,7 +221,7 @@ h1{text-align:center;font-size:26px;}
   </div>
 
   <div class="card status NORMAL" id="status-box">Connecting...</div>
-  <div class="alert" id="alert-box"> </div>
+  <div class="alert" id="alert-box">Abnormal pressure detected!</div>
 
   <div class="metrics">
     <div class="card">
@@ -236,12 +236,6 @@ h1{text-align:center;font-size:26px;}
       <button class="toggle-btn" onclick="toggleTempUnit()">Switch to F</button>
     </div>
   </div>
-
-
- <div class="card" style="text-align:center;">
-  <p class="section-title">Next Pressure Switch In:</p>
-  <div id="countdown" style="font-size:24px;color:#38bdf8;">--:--</div>
-</div>
 
   <p class="timestamp" id="timestamp">Last updated: --</p>
 
@@ -476,18 +470,13 @@ document.addEventListener("mousemove", (e) => {
 });
 onValue(dataRef, (snap) => {
   const d = snap.val();
-  if (!d) return;
-  
-  if (d.remaining !== undefined) {
-    document.getElementById("countdown").textContent = d.remaining + "s";
-  }
+  if (!d) { console.log("No data in Firebase!"); return; }
 
   const p = d.pressure;
   const t = d.temperature;
   const status = d.status;
-});
   currentTemp = t;
-  
+
   const pressureEl = document.getElementById("pressure");
   pressureEl.textContent = p.toFixed(2);
   if (status === "NORMAL") {
@@ -546,7 +535,6 @@ onValue(dataRef, (snap) => {
   console.error("Firebase error:", error);
   document.getElementById("status-box").textContent = "Connection Failed!";
 });
-
 </script>
 
 </body>
