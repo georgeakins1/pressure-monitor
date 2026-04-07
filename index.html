@@ -408,11 +408,11 @@ window.toggleDrop = function(dropId, arrowId) {
 
 function getWeather(pressure) {
   if (pressure > 1020) {
-    return { icon: "☀️", desc: "High Pressure", detail: "Sunny: High Pressure" };
+    return { icon: "☀️", desc: "Sunny", detail: "Sunny: High Pressure" };
   } else if (pressure >= 1000 && pressure <= 1020) {
-    return { icon: "⛅", desc: "Normal", detail: "Partly Cloudy: Stable atmospheric condition" };
+    return { icon: "⛅", desc: "Partly Cloudy", detail: "Partly Cloudy: Stable atmospheric condition" };
   } else {
-    return { icon: "⛈️", desc: "Low Pressure", detail: "Stormy: Low Pressure" };
+    return { icon: "⛈️", desc: "Stormy", detail: "Stormy: Low Pressure" };
   }
 }
 const chart = new Chart(document.getElementById("chart"), {
