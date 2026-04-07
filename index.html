@@ -483,25 +483,28 @@ onValue(dataRef, (snap) => {
   const status = d.status;
   currentTemp = t;
   
-  // --- Countdown Synchronization ---
-  if (d.nextSwitch) {   // <-- check if ESP32 sent nextSwitch
-    const countdownEl = document.getElementById("countdown");
+  // ---------- Countdown Logic ----------
+  // Suppose ESP32 switches every 20 seconds
+  const cycleDuration = 20; // seconds
+  const now = Date.now();    // milliseconds
+  // Calculate seconds until next switch
+  const secondsPassed = Math.floor((now / 1000) % cycleDuration);
+  const secondsLeft = cycleDuration - secondsPassed;
 
-    // create interval only once
-    if (!window.countdownInterval) {
-      window.countdownInterval = setInterval(() => {
-        const remaining = d.nextSwitch - Date.now();
-        if (remaining <= 0) {
-          countdownEl.textContent = "00:00";
-        } else {
-          const seconds = Math.floor(remaining / 1000) % 60;
-          const minutes = Math.floor(remaining / 60000);
-          countdownEl.textContent =
-            String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
-        }
-      }, 500);
-    }
+  // Display countdown on a dedicated element
+  let countdownEl = document.getElementById("countdown");
+  if (!countdownEl) {
+    // create element if not already present
+    countdownEl = document.createElement("div");
+    countdownEl.id = "countdown";
+    countdownEl.style.textAlign = "center";
+    countdownEl.style.fontSize = "18px";
+    countdownEl.style.marginTop = "10px";
+    countdownEl.style.color = "#38bdf8";
+    document.querySelector(".container").insertBefore(countdownEl, document.querySelector(".leds").nextSibling);
   }
+  countdownEl.textContent = `Next pressure update in: ${secondsLeft}s`;
+  // ---------- End Countdown ----------
   const pressureEl = document.getElementById("pressure");
   pressureEl.textContent = p.toFixed(2);
   if (status === "NORMAL") {
