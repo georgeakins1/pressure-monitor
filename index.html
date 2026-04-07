@@ -476,35 +476,18 @@ document.addEventListener("mousemove", (e) => {
 });
 onValue(dataRef, (snap) => {
   const d = snap.val();
-  if (!d) { console.log("No data in Firebase!"); return; }
+  if (!d) return;
+  
+  if (d.remaining !== undefined) {
+    document.getElementById("countdown").textContent = d.remaining + "s";
+  }
 
   const p = d.pressure;
   const t = d.temperature;
   const status = d.status;
+});
   currentTemp = t;
   
-  // ---------- Countdown Logic ----------
-  // Suppose ESP32 switches every 20 seconds
-  const cycleDuration = 20; // seconds
-  const now = Date.now();    // milliseconds
-  // Calculate seconds until next switch
-  const secondsPassed = Math.floor((now / 1000) % cycleDuration);
-  const secondsLeft = cycleDuration - secondsPassed;
-
-  // Display countdown on a dedicated element
-  let countdownEl = document.getElementById("countdown");
-  if (!countdownEl) {
-    // create element if not already present
-    countdownEl = document.createElement("div");
-    countdownEl.id = "countdown";
-    countdownEl.style.textAlign = "center";
-    countdownEl.style.fontSize = "18px";
-    countdownEl.style.marginTop = "10px";
-    countdownEl.style.color = "#38bdf8";
-    document.querySelector(".container").insertBefore(countdownEl, document.querySelector(".leds").nextSibling);
-  }
-  countdownEl.textContent = `Next pressure update in: ${secondsLeft}s`;
-  // ---------- End Countdown ----------
   const pressureEl = document.getElementById("pressure");
   pressureEl.textContent = p.toFixed(2);
   if (status === "NORMAL") {
