@@ -237,6 +237,13 @@ h1{text-align:center;font-size:26px;}
     </div>
   </div>
 
+
+  <div class="card" style="text-align:center;">
+  	<p class="section-title">Mode & Countdown</p>
+  	<p>Current Mode: <span id="mode">REAL</span></p>
+  	<p>Next switch in: <span id="countdown">20</span> seconds</p>
+  </div>
+
   <p class="timestamp" id="timestamp">Last updated: --</p>
 
   <div class="card">
@@ -535,6 +542,24 @@ onValue(dataRef, (snap) => {
   console.error("Firebase error:", error);
   document.getElementById("status-box").textContent = "Connection Failed!";
 });
+
+// Countdown & Mode Switch Display
+let countdown = 20; // 20 seconds for each mode
+let isRealMode = true; // true = real pressure, false = simulated
+
+const countdownEl = document.getElementById("countdown");
+const modeEl = document.getElementById("mode");
+
+setInterval(() => {
+    countdown--;
+    if (countdown <= 0) {
+        countdown = 20; // reset countdown
+        isRealMode = !isRealMode; // switch mode
+    }
+    countdownEl.textContent = countdown;
+    modeEl.textContent = isRealMode ? "REAL" : "SIMULATED";
+}, 1000);
+
 </script>
 
 </body>
